@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>漢字名づけ支援ツール｜パーツやイメージから想いにぴったりの一字を探す</title>
+<meta name="google-site-verification" content="OJZV3eN-7gShR8TOAK0w7AH2erDp5mH-8GvMh2h6OUo" />
+<meta name="description" content="親の想いに最適な一字を探すための漢字検索ツール。常用漢字・人名用漢字を、字に含まれるパーツやイメージ（意味）、読み・部首・画数から絞り込めます。">
+<link rel="canonical" href="https://kanji.ryimaworks.com/">
+<meta property="og:url" content="https://kanji.ryimaworks.com/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="漢字名づけ支援ツール">
+<meta property="og:title" content="漢字名づけ支援ツール｜パーツやイメージから想いにぴったりの一字を探す">
+<meta property="og:description" content="親の想いに最適な一字を探すための漢字検索ツール。常用漢字・人名用漢字を、字に含まれるパーツやイメージ（意味）、読み・部首・画数から絞り込めます。">
+<meta property="og:locale" content="ja_JP">
+<!-- SNSでURLを共有したときに表示される画像（OGP画像） -->
+<meta property="og:image" content="https://kanji.ryimaworks.com/ogp.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="漢字名づけ支援ツール　パーツやイメージから、想いにぴったりの一字を探す">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E字%3C/text%3E%3C/svg%3E">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div class="container">
+<header>
+  <h1>漢字名づけ支援ツール</h1>
+  <p>パーツやイメージから、想いにぴったりの一字を探す</p>
+</header>
+
+<details class="about">
+  <summary>このツールについて・使い方</summary>
+  <div class="intro">
+  <p>子どもの名づけで、「あと一字」「最高の一字」を探すための漢字検索ツールです。</p>
+  <p>常用漢字・人名用漢字を、画数や意味だけでなく、構成パーツや漢字のイメージから絞り込むことができます。</p>
+  <p>漢字にこだわりがある・漢字に願いを込めて名前を決めていきたいという方々の助けになればうれしいです。</p>
+</div>
+  <ul>
+    <li><strong>パーツ</strong>：さんずい・車などの構成要素で検索できます。入力方法が分からないパーツは「パーツを選ぶ」ボタンから選択できます。2文字以上まとめて入力すると、それぞれを条件に追加します。複数のパーツを指定すると、すべてのパーツを含む漢字を探します。</li>
+    <li><strong>イメージ</strong>：漢字のイメージをタグでまとめています。「タグを選ぶ」ボタンから、お好みのタグを選択して検索できます。</li>
+    <li><strong>読み</strong>：音読み・訓読み・名乗り読みを、ひらがなの完全一致で検索します。訓読みの送り仮名は、あってもなくても検索されます。スペースで区切ると、複数まとめて入力できます。</li>
+    <li><strong>部首</strong>：「部首を選ぶ」ボタンから、部首の一覧で選び検索します。</li>
+    <li><strong>画数</strong>：「画数を選ぶ」ボタンから、画数が一致する漢字を検索します。</li>
+    <li>検索結果は画数・読み・部首番号で並べ替えることができます。また、タグ付きの漢字を優先して表示することもできます。</li>
+    <li>コンパクト表示に切り替えると、多くの漢字を一覧で見比べられます。タップすると詳しく表示されます。</li>
+  </ul>
+</details>
+
+<!-- 検索条件：見出しをタップで開閉。name を同じにすると、1つ開くと他は自動で閉じる -->
+<div class="search-box">
+  <details class="filter-group" name="filter">
+    <summary><span class="fg-name">パーツ</span><span class="fg-sum" id="sumParts">指定なし</span></summary>
+    <div class="fg-body">
+      <input type="text" id="partInput" aria-label="パーツ" placeholder="例: 車 日 氵" enterkeyhint="enter" autocomplete="off">
+      <div class="hint">Enter（改行キー）で追加。複数のパーツは、すべてを含む漢字を探します。</div>
+      <div id="suggestBox"></div>
+      <div class="pick-row"><button class="btn pick" id="openPicker">パーツを選ぶ</button></div>
+      <div id="selectedParts" class="tag-chips"></div>
+      <label class="sublabel" for="exInput">含まないパーツ</label>
+      <input type="text" id="exInput" placeholder="例: 木 氵" enterkeyhint="enter" autocomplete="off">
+      <div class="hint">入力したパーツを含む漢字を除きます。「パーツを選ぶ」の除外モードでも選べます。</div>
+      <div id="selectedEx" class="tag-chips"></div>
+    </div>
+  </details>
+
+  <details class="filter-group" name="filter" id="tagGroup">
+    <summary><span class="fg-name">イメージ</span><span class="fg-sum" id="sumTags">指定なし</span></summary>
+    <div class="fg-body">
+      <div class="pick-row"><button class="btn pick" id="openTags">タグを選ぶ</button></div>
+      <div id="selectedTags" class="tag-chips"></div>
+      <div class="hint">複数選ぶと、どれかのタグが付いた漢字を表示します。</div>
+    </div>
+  </details>
+
+  <details class="filter-group" name="filter">
+    <summary><span class="fg-name">読み</span><span class="fg-sum" id="sumReadings">指定なし</span></summary>
+    <div class="fg-body">
+      <input type="text" id="readingInput" aria-label="読み" placeholder="例: はる, み, てる など" enterkeyhint="enter" autocomplete="off">
+      <div class="hint">ひらがなの完全一致で探します。Enter（改行キー）で追加。</div>
+      <div id="selectedReadings" class="tag-chips"></div>
+      <div id="readingMode" class="mode-row"></div>
+    </div>
+  </details>
+
+  <details class="filter-group" name="filter">
+    <summary><span class="fg-name">部首</span><span class="fg-sum" id="sumRads">指定なし</span></summary>
+    <div class="fg-body">
+      <div class="pick-row"><button class="btn pick" id="openRads">部首を選ぶ</button></div>
+      <div id="selectedRads" class="tag-chips"></div>
+      <div class="hint">複数選ぶと、どれかの部首の漢字を表示します。</div>
+    </div>
+  </details>
+
+  <details class="filter-group" name="filter">
+    <summary><span class="fg-name">画数</span><span class="fg-sum" id="sumStrokes">指定なし</span></summary>
+    <div class="fg-body">
+      <div class="pick-row"><button class="btn pick" id="openStrokes">画数を選ぶ</button></div>
+      <div id="selectedStrokes" class="tag-chips"></div>
+      <div class="hint">複数選ぶと、どれかの画数の漢字を表示します。一般的な漢字辞典の画数であり、姓名判断（旧字体・康熙字典の画数）とは違う可能性があります。</div>
+    </div>
+  </details>
+
+  <div class="clear-row"><button class="btn" id="clearAll">条件をすべてクリア</button></div>
+</div>
+
+
+<div class="result-bar">
+  <div id="resultCount" class="result-count">検索結果: 0件</div>
+  <button class="btn" id="openFav">★ お気に入り（<span id="favCount">0</span>）</button>
+  <div class="sort-row">
+    <label>並べ替え
+      <select id="sortSel">
+        <option value="std">標準</option>
+        <option value="sa">画数が少ない順</option>
+        <option value="sd">画数が多い順</option>
+        <option value="yomi">読み（五十音）順</option>
+        <option value="bushu">部首番号順</option>
+      </select>
+    </label>
+    <button type="button" class="chip toggle" id="tagFirst" aria-pressed="false">タグ付きを優先表示</button>
+    <div class="view-switch" role="group" aria-label="表示の切り替え">
+      <button type="button" class="vs-btn" data-view="detail" aria-pressed="true" aria-label="詳細表示" title="詳細表示"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><rect x="3" y="4.5" width="18" height="6" rx="1"/><rect x="3" y="13.5" width="18" height="6" rx="1"/></svg></button>
+      <button type="button" class="vs-btn" data-view="compact" aria-pressed="false" aria-label="コンパクト表示" title="コンパクト表示"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><rect x="3.5" y="3.5" width="7" height="7" rx="1"/><rect x="13.5" y="3.5" width="7" height="7" rx="1"/><rect x="3.5" y="13.5" width="7" height="7" rx="1"/><rect x="13.5" y="13.5" width="7" height="7" rx="1"/></svg></button>
+    </div>
+  </div>
+  <div class="sort-note">よく使われる漢字や良い意味の漢字に、優先してタグを付けています。</div>
+</div>
+<div id="kanjiGrid" class="kanji-grid"></div>
+<div id="moreWrap" class="more-wrap"></div>
+<noscript><p class="error">このツールはJavaScriptを使います。JavaScriptを有効にしてご利用ください。</p></noscript>
+
+
+
+<footer>
+  <p><strong>ご注意</strong>　このサイトは名づけの参考を目的としています。届出可能な漢字かどうかは、法務省のウェブサイトや市区町村の窓口などで最新の情報を確認してください。掲載内容の正確さは保証しかねます。</p>
+  <p><strong>漢字データの出典</strong>　漢字の読み・画数・部首などは、<a href="https://www.edrdg.org/wiki/index.php/KANJIDIC_Project" target="_blank" rel="noopener">KANJIDIC2</a>（© Electronic Dictionary Research and Development Group）を元にしています。KANJIDIC2 は <a href="https://creativecommons.org/licenses/by-sa/4.0/deed.ja" target="_blank" rel="noopener">CC BY-SA 4.0</a> で提供されており、ライセンスの詳細は <a href="https://www.edrdg.org/edrdg/license.html" target="_blank" rel="noopener">EDRDG のライセンスページ</a>にあります。本サイトの data.json は、KANJIDIC2 を常用漢字・人名用漢字の範囲に絞り込み、不足分の補完、部首の異体字の追加、互換字の整理などの加工をしたもので、元と同じ CC BY-SA 4.0 で提供します。名乗り読みの一部は、作者が追加したもの（yomi_extra.json）で、名乗り欄の先頭に表示しています。</p>
+  <p><strong>パーツデータの出典</strong>　パーツ（構成要素）のデータ（components.json・parts.json）は、<a href="https://gitlab.chise.org/CHISE/ids" target="_blank" rel="noopener">CHISE プロジェクトの IDS データ</a>と<a href="https://github.com/cjkvi/cjkvi-ids" target="_blank" rel="noopener">漢字データベースプロジェクト（cjkvi-ids）</a>を元に、本サイト用に選別・編集（改変）したものです。<a href="COPYING.txt" target="_blank" rel="noopener">GNU General Public License v2 以降</a>で提供します。無保証です。</p>
+  <p><strong>字義</strong>　一般的な辞書をもとにした意味を、<span id="cntMean">―</span>字に表示しています。イメージタグは<span id="cntTag">―</span>字に付いています（どちらも、このサイトに載っている漢字の中での数です）。</p>
+  <p>常用漢字・人名用漢字の範囲は、文化庁・法務省の公表資料に基づいています。部首番号は康熙部首の番号です。</p>
+  <p><strong>旧字体について</strong>　旧字体は、端末やアプリによっては自動で元の字（正字）に置き換えられる場合があります。</p>
+  <p><strong>お問い合わせ</strong>　内容等の不備（漢字データ、著作権・ライセンスの扱いなど）を見つけた場合は、速やかに修正いたしますので、ご連絡ください。連絡先：10101ryima10101-at-gmail.com（「-at-」を「@」に置き換えてください）</p>
+  <p>© 2026 RyIma. All rights reserved.（上記の出典データを除く、このサイトの画面・検索の仕組み・イメージタグ・字義について）</p>
+</footer>
+</div>
+
+<!-- お気に入り -->
+<div id="favModal">
+  <div class="sheet">
+    <div class="sheet-head">
+      <strong class="sheet-title">お気に入り（検討リスト）</strong>
+      <button class="btn primary" id="closeFav">完了</button>
+    </div>
+    <div class="sub">
+      <button class="btn" id="favCopy">一覧をコピー</button>
+      <button class="btn" id="favClear">すべて削除</button>
+      <span id="favMsg" class="msg-ok" role="status"></span>
+    </div>
+    <div class="sheet-body">
+      <button type="button" class="launch" id="openName"><span class="launch-ic" aria-hidden="true">姓名</span><span class="launch-txt"><b>姓と組み合わせて候補を見比べる</b><span>お気に入りの字を使って、名前の候補を姓と並べて見比べます</span></span><span class="launch-go" aria-hidden="true">›</span></button>
+      <div class="note">お気に入りは、この端末のこのブラウザにだけ保存されます。ブラウザのデータを消すと、消えます。</div>
+      <div id="favBody"></div>
+    </div>
+  </div>
+</div>
+
+<!-- お気に入りから開く：姓と組み合わせて候補を見比べる（姓と候補は保存しない） -->
+<div id="nameModal">
+  <div class="sheet">
+    <div class="sheet-head">
+      <strong class="sheet-title">姓と組み合わせて候補を見比べる</strong>
+      <button class="btn primary" id="closeName">完了</button>
+    </div>
+    <div class="sheet-body">
+      <label class="sei-row">姓<input type="text" id="seiInput" placeholder="例：佐藤" maxlength="10" autocomplete="off"></label>
+      <div class="slots" id="slots"></div>
+      <div id="nameTools">
+        <div class="name-bar">
+          <button type="button" class="btn" id="btnKata">型を編集</button>
+          <button type="button" class="btn" id="btnFill">字を入れる</button>
+          <button type="button" class="btn" id="btnCompare">書体を見比べる</button>
+        </div>
+        <div class="font-seg" id="fontSeg" role="group" aria-label="候補の書体">
+          <button type="button" data-font="min" aria-pressed="true">明朝</button>
+          <button type="button" data-font="got" aria-pressed="false">ゴシック</button>
+          <button type="button" data-font="kyo" aria-pressed="false">教科書体</button>
+        </div>
+        <p class="font-note" id="kyoNote" hidden></p>
+        <div class="fill-box" id="fillBox"><div class="fill-title" id="fillTitle"></div><div class="fill-chips" id="fillChips"></div></div>
+        <div class="guide" id="nameGuide" hidden>お気に入りに字を入れると、型の①などの場所に入れて見比べられます。検索結果の ☆ をタップして追加してください。</div>
+      </div>
+      <div class="kata-panel" id="kataPanel" hidden>
+        <strong id="kataTitle"></strong>
+        <div class="kata-row"><span class="kata-sei" id="kataSei"></span><input type="text" id="kataInput" autocomplete="off" aria-label="名前の型" placeholder="例：①太"></div>
+        <div class="kata-count" id="kataCount" aria-live="polite"></div>
+        <div><button type="button" class="btn" id="insMark">〇（置き換える場所）を入れる</button></div>
+        <div class="kata-copy" id="kataCopy"></div>
+        <p class="note">〇は、お気に入りの字に置き換える場所の印です。押すたびに①②③と番号が付き、「字を入れる」で番号の順に置き換わります。番号を使わずに「仁」のように直接書いてもOKです。</p>
+        <div class="kata-btns"><button type="button" class="btn" id="kataCancel">取消</button><button type="button" class="btn primary" id="kataOk">決定</button></div>
+      </div>
+      <div class="privacy"><b>姓と候補は保存されません</b>プライバシーに配慮し、入力した姓と候補は、この端末にもURLにも残しません。この画面を閉じたり、ほかの画面に移動したりすると消えます。必要に応じて、スクリーンショットなどで記録してください。</div>
+    </div>
+  </div>
+</div>
+
+<!-- 1つの候補を、3つの書体×縦書き・横書きで見比べる -->
+<div id="cmpModal">
+  <div class="sheet">
+    <div class="sheet-head">
+      <strong class="sheet-title" id="cmpTitle"></strong>
+      <button class="btn primary" id="closeCmp">閉じる</button>
+    </div>
+    <div class="sheet-body">
+      <h3>縦書き</h3><div class="cmp-v" id="cmpV"></div>
+      <h3>横書き</h3><div class="cmp-h-list" id="cmpH"></div>
+      <p class="font-note" id="cmpNote" hidden></p>
+    </div>
+  </div>
+</div>
+
+<!-- タグ・部首・画数の選択画面（共通） -->
+<div id="selModal">
+  <div class="sheet">
+    <div class="sheet-head">
+      <strong id="selTitle" class="sheet-title"></strong>
+      <button class="btn" id="selClear">選択を解除</button>
+      <button class="btn primary" id="selClose">完了</button>
+    </div>
+    <div class="sheet-body" id="selBody"></div>
+  </div>
+</div>
+
+<!-- パーツ選択画面 -->
+<div id="modal">
+  <div class="sheet">
+    <div class="sheet-head">
+      <input type="text" id="pickerFilter" placeholder="パーツを絞り込み（字や名前）">
+      <button class="btn primary" id="closePicker">完了</button>
+    </div>
+    <div class="sub">
+      <label>画数 <select id="strokeSel"><option value="0">すべて</option></select></label>
+      <label><input type="checkbox" id="showMinor"> 1字だけ含むパーツも表示</label>
+      <label class="ex-label"><input type="checkbox" id="exMode"> 除外モード（タップしたパーツを含む漢字を除く）</label>
+    </div>
+    <div class="sheet-body" id="pickerBody"></div>
+  </div>
+</div>
+
+<!-- ページの先頭へ戻るボタン（下にスクロールしたときだけ表示） -->
+<button type="button" id="toTop" class="to-top" aria-label="ページの先頭へ戻る" title="ページの先頭へ戻る" hidden><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 15l6-6 6 6"/></svg></button>
+
+<script src="app.js"></script>
+</body>
+</html>
